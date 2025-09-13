@@ -1,0 +1,68 @@
+# ── Node / pnpm
+node_modules/
+**/node_modules/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── TypeScript
+*.tsbuildinfo
+
+# ── Build outputs
+dist/
+**/dist/
+.build/
+**/.build/
+out/
+**/out/
+packages/db/prisma/migrations/*
+!packages/db/prisma/migrations/.keep
+
+# ── Next.js
+.next/
+**/.next/
+.vercel/
+# if you ever use Next export:
+apps/**/out/
+
+# ── Coverage & caches
+coverage/
+**/coverage/
+.nyc_output/
+.cache/
+**/.cache/
+.eslintcache
+.stylelintcache
+
+# ── Env files (keep only examples in git)
+.env
+.env.*
+!.env.example
+apps/**/.env.local
+
+# ── OS/editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# ── Runtime/data artifacts
+*.log
+logs/
+dump.rdb
+*.rdb
+*.pid
+*.sock
+
+# ── Platform/CLI
+.fly/
+# Supabase CLI temp files (if you use it later)
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+
+# ── Mirror Repo
+.mirror_publish

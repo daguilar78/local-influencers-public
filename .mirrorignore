@@ -1,0 +1,12 @@
+# extra safety beyond .gitignore (rsync-style)
+/.git/
+/.pnpm-store/
+/**/.env
+/**/.env.*
+/**/.next/
+/**/dist/
+/**/node_modules/
+/**/.vercel/
+/**/.fly/
+/**/coverage/
+/**/.cache/

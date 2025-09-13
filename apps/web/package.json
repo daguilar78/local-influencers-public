@@ -1,0 +1,27 @@
+{
+	"name": "web",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"prisma:generate": "prisma generate --schema=../../packages/db/prisma/schema.prisma",
+		"postinstall": "prisma generate --schema=../../packages/db/prisma/schema.prisma"
+	},
+	"dependencies": {
+		"@prisma/client": "^5.18.0",
+		"@repo/shared": "workspace:*",
+		"next": "14.2.5",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1"
+	},
+	"devDependencies": {
+		"@types/react": "19.1.12",
+		"autoprefixer": "^10.4.19",
+		"postcss": "^8.4.41",
+		"prisma": "^5.18.0",
+		"tailwindcss": "^3.4.10",
+		"typescript": "^5.9.2"
+	}
+}

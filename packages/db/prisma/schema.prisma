@@ -1,0 +1,155 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_DATABASE_URL")
+}
+
+// --- Enums & Models from your spec ---
+
+enum platform {
+    YOUTUBE
+    X
+    INSTAGRAM
+    FACEBOOK
+    TIKTOK
+    TWITCH
+}
+
+model creator {
+    id              String   @id @default(cuid())
+    platform        platform
+    platformUserId  String
+    handle          String?
+    displayName     String?
+    profileUrl      String?
+    avatarUrl       String?
+    country         String?
+    locale          String?
+    isVerified      Boolean  @default(false)
+    followersHidden Boolean  @default(false)
+    followerCount   BigInt   @db.BigInt
+    categorySummary Json?
+    sampleEvidence  Json?
+    etag            String?
+    lastCheckedAt   DateTime
+    firstSeenAt     DateTime @default(now())
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    // Relations
+    regionCreators  region_creators[]
+    influencerLinks influencer_creator[]
+    geoSignals      geo_signal[]
+
+    @@unique([platform, platformUserId])
+    @@index([platform, followerCount])
+    @@index([lastCheckedAt])
+}
+
+model influencer {
+    id         String   @id @default(cuid())
+    name       String
+    website    String?
+    contactUrl String?
+    status     String?
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    notes    influencer_note[]
+    creators influencer_creator[]
+}
+
+model influencer_creator {
+    influencerId String
+    creatorId    String
+    isPrimary    Boolean  @default(false)
+    linkedAt     DateTime @default(now())
+
+    influencer influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+    creator    creator    @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+    @@id([influencerId, creatorId])
+    @@index([creatorId])
+}
+
+model influencer_note {
+    id           String   @id @default(cuid())
+    influencerId String
+    body         String
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    authorUserId String?
+
+    influencer influencer @relation(fields: [influencerId], references: [id], onDelete: Cascade)
+
+    @@index([influencerId, createdAt])
+}
+
+model region_index {
+    id           String   @id @default(cuid())
+    code         String   @unique
+    name         String
+    minLng       Decimal  @db.Decimal(9, 6)
+    minLat       Decimal  @db.Decimal(9, 6)
+    maxLng       Decimal  @db.Decimal(9, 6)
+    maxLat       Decimal  @db.Decimal(9, 6)
+    cronSchedule String   @default("0 3 * * *")
+    active       Boolean  @default(true)
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+
+    regionCreators region_creators[]
+    JobRun         job_run[]
+}
+
+model region_creators {
+    regionId      String
+    creatorId     String
+    weight        Float    @default(0)
+    confidence    Float?
+    evidenceCount Int      @default(0)
+    firstSeenAt   DateTime @default(now())
+    lastSeenAt    DateTime @default(now())
+
+    region  region_index @relation(fields: [regionId], references: [id], onDelete: Cascade)
+    creator creator      @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+    @@id([regionId, creatorId])
+    @@index([creatorId])
+    @@index([regionId, weight])
+}
+
+model geo_signal {
+    id           String   @id @default(cuid())
+    creatorId    String
+    platform     platform
+    postId       String
+    lat          Decimal? @db.Decimal(9, 6)
+    lng          Decimal? @db.Decimal(9, 6)
+    locationDesc String?
+    observedAt   DateTime
+    createdAt    DateTime @default(now())
+
+    creator creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+    @@index([creatorId, observedAt])
+    @@index([platform, postId])
+}
+
+model job_run {
+    id         String    @id @default(cuid())
+    platform   platform
+    regionId   String?
+    startedAt  DateTime  @default(now())
+    finishedAt DateTime?
+    ok         Boolean?
+    details    Json?
+
+    region region_index? @relation(fields: [regionId], references: [id], onDelete: SetNull)
+
+    @@index([platform, regionId, startedAt])
+}

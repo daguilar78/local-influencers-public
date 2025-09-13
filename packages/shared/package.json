@@ -1,0 +1,25 @@
+{
+	"name": "@repo/shared",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsc -p tsconfig.json",
+		"prisma:generate": "prisma generate --schema=../db/prisma/schema.prisma"
+	},
+	"dependencies": {
+		"cron-parser": "^4.9.0"
+	},
+	"peerDependencies": {
+		"@prisma/client": "^5.18.0"
+	},
+	"devDependencies": {
+		"@types/node": "22",
+		"typescript": "^5.9.2"
+	}
+}

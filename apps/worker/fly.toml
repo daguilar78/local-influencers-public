@@ -1,0 +1,18 @@
+app = "local-influencers-worker"
+primary_region = "iad"
+
+[build]
+  dockerfile = "apps/worker/Dockerfile"
+
+[processes]
+  cron = "node apps/worker/dist/index.js"
+
+# Example: run every hour (UTC) using Fly Machines cron
+[[vm]]
+  size = "shared-cpu-1x"
+
+[[metrics]]
+  port = 9091
+
+# If using Fly's schedules feature (via machines):
+# flyctl machine update --schedule "0 * * * *" <machine-id>

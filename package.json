@@ -1,0 +1,27 @@
+{
+	"name": "social-api-monorepo",
+	"private": true,
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
+	"scripts": {
+		"postinstall": "pnpm -F web run prisma:generate && pnpm -F worker run prisma:generate",
+		"prebuild": "pnpm -F web run prisma:generate && pnpm -F worker run prisma:generate",
+		"build": "pnpm -r build",
+		"dev:web": "pnpm -C apps/web dev",
+		"dev:worker": "pnpm -C apps/worker dev",
+		"dev": "concurrently -n web,worker -c blue,magenta \"pnpm:dev:web\" \"pnpm:dev:worker\"",
+		"prisma:generate": "pnpm -F web exec prisma generate --schema=packages/db/prisma/schema.prisma && pnpm -F worker exec prisma generate --schema=packages/db/prisma/schema.prisma",
+		"prisma:migrate:dev": "pnpm -F @repo/db exec prisma migrate dev --schema=packages/db/prisma/schema.prisma",
+		"prisma:studio": "pnpm -F @repo/db exec prisma studio --schema=packages/db/prisma/schema.prisma",
+		"typecheck": "tsc -p tsconfig.base.json --noEmit"
+	},
+	"devDependencies": {
+		"@types/node": "22",
+		"concurrently": "^9.0.0",
+		"prisma": "^5.18.0",
+		"typescript": "^5.9.2"
+	},
+	"packageManager": "pnpm@9.15.4"
+}
